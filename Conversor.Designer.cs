@@ -29,52 +29,86 @@
         private void InitializeComponent()
         {
             TaulaBotons = new TableLayoutPanel();
-            Button_EurosAPesetes = new Button();
-            Button_PesetesAEuros = new Button();
+            PesetesAEuros = new Button();
+            EurosAPesetes = new Button();
+            CaixaEscriptura = new RichTextBox();
+            TextTitol = new Label();
             TaulaBotons.SuspendLayout();
             SuspendLayout();
             // 
             // TaulaBotons
             // 
-            TaulaBotons.Anchor = AnchorStyles.Top;
             TaulaBotons.ColumnCount = 4;
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            TaulaBotons.Controls.Add(Button_PesetesAEuros, 3, 2);
-            TaulaBotons.Controls.Add(Button_EurosAPesetes, 3, 1);
-            TaulaBotons.Location = new Point(289, 91);
+            TaulaBotons.Controls.Add(PesetesAEuros, 3, 4);
+            TaulaBotons.Controls.Add(EurosAPesetes, 3, 3);
+            TaulaBotons.Controls.Add(CaixaEscriptura, 0, 1);
+            TaulaBotons.Controls.Add(TextTitol, 0, 0);
+            TaulaBotons.Dock = DockStyle.Fill;
+            TaulaBotons.Location = new Point(0, 0);
             TaulaBotons.Name = "TaulaBotons";
-            TaulaBotons.RowCount = 4;
-            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            TaulaBotons.Size = new Size(422, 272);
+            TaulaBotons.RowCount = 6;
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6673565F));
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
+            TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6631947F));
+            TaulaBotons.Size = new Size(800, 450);
             TaulaBotons.TabIndex = 0;
             // 
-            // Button_EurosAPesetes
+            // PesetesAEuros
             // 
-            Button_EurosAPesetes.Dock = DockStyle.Fill;
-            Button_EurosAPesetes.Location = new Point(318, 71);
-            Button_EurosAPesetes.MinimumSize = new Size(40, 40);
-            Button_EurosAPesetes.Name = "Button_EurosAPesetes";
-            Button_EurosAPesetes.Size = new Size(101, 62);
-            Button_EurosAPesetes.TabIndex = 0;
-            Button_EurosAPesetes.Text = "Euros -> Pesetes";
-            Button_EurosAPesetes.UseVisualStyleBackColor = true;
+            PesetesAEuros.Dock = DockStyle.Fill;
+            PesetesAEuros.Location = new Point(603, 303);
+            PesetesAEuros.MinimumSize = new Size(40, 40);
+            PesetesAEuros.Name = "PesetesAEuros";
+            PesetesAEuros.Size = new Size(194, 69);
+            PesetesAEuros.TabIndex = 1;
+            PesetesAEuros.Text = "Pesetes -> Euros\r\n";
+            PesetesAEuros.UseVisualStyleBackColor = true;
+            PesetesAEuros.Click += pesetesAEuros;
             // 
-            // Button_PesetesAEuros
+            // EurosAPesetes
             // 
-            Button_PesetesAEuros.Anchor = AnchorStyles.None;
-            Button_PesetesAEuros.Location = new Point(318, 139);
-            Button_PesetesAEuros.MinimumSize = new Size(40, 40);
-            Button_PesetesAEuros.Name = "Button_PesetesAEuros";
-            Button_PesetesAEuros.Size = new Size(101, 62);
-            Button_PesetesAEuros.TabIndex = 1;
-            Button_PesetesAEuros.Text = "Pesetes -> Euros\r\n";
-            Button_PesetesAEuros.UseVisualStyleBackColor = true;
+            EurosAPesetes.Dock = DockStyle.Fill;
+            EurosAPesetes.Location = new Point(603, 228);
+            EurosAPesetes.MinimumSize = new Size(40, 40);
+            EurosAPesetes.Name = "EurosAPesetes";
+            EurosAPesetes.Size = new Size(194, 69);
+            EurosAPesetes.TabIndex = 2;
+            EurosAPesetes.Text = "Euros -> Pesetes";
+            EurosAPesetes.UseVisualStyleBackColor = true;
+            EurosAPesetes.Click += eurosAPesetes;
+            // 
+            // CaixaEscriptura
+            // 
+            TaulaBotons.SetColumnSpan(CaixaEscriptura, 3);
+            CaixaEscriptura.Dock = DockStyle.Fill;
+            CaixaEscriptura.Font = new Font("Segoe UI Symbol", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            CaixaEscriptura.Location = new Point(3, 78);
+            CaixaEscriptura.Multiline = false;
+            CaixaEscriptura.Name = "CaixaEscriptura";
+            CaixaEscriptura.RightToLeft = RightToLeft.No;
+            CaixaEscriptura.Size = new Size(594, 69);
+            CaixaEscriptura.TabIndex = 3;
+            CaixaEscriptura.Text = "";
+            CaixaEscriptura.TextChanged += validacioDeText;
+            // 
+            // TextTitol
+            // 
+            TextTitol.AutoSize = true;
+            TextTitol.Dock = DockStyle.Fill;
+            TextTitol.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            TextTitol.Location = new Point(3, 0);
+            TextTitol.Name = "TextTitol";
+            TextTitol.Size = new Size(194, 75);
+            TextTitol.TabIndex = 4;
+            TextTitol.Text = "Conversor de divises";
+            TextTitol.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // Conversor
             // 
@@ -83,15 +117,18 @@
             ClientSize = new Size(800, 450);
             Controls.Add(TaulaBotons);
             Name = "Conversor";
-            Text = "Conversor";
+            Text = "Conversor de divises";
             TaulaBotons.ResumeLayout(false);
+            TaulaBotons.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
         private TableLayoutPanel TaulaBotons;
-        private Button Button_EurosAPesetes;
-        private Button Button_PesetesAEuros;
+        private Button PesetesAEuros;
+        private Button EurosAPesetes;
+        private RichTextBox CaixaEscriptura;
+        private Label TextTitol;
     }
 }
