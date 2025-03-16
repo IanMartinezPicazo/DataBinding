@@ -4,16 +4,20 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
     public partial class Conversor : Form
     {
+        // Determina la divisa actual. (Euro per defecte.)
+        private string divisa = "€";
         public Conversor()
         {
             InitializeComponent();
 
+            // Creació de botons númerics.
             for (int i = 1; i <= 9; i++)
             {
                 CrearBotons("Num" + i, i.ToString(), (i - 1) % 3, (i - 1) / 3 + 2);
             }
-
             CrearBotons("Num0", "0", 0, 5, true);
+
+            this.DivisaCaixa.SelectedItem = divisa;
         }
 
         // Assigna els botons númerics per codi a la vista i també assigna un event compartit per a cadascú.
@@ -97,8 +101,12 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         // Valor constant de conversió.
         private const double conversio = 166.386;
 
-        // Determina la divisa actual. (Euro per defecte.)
-        private string divisa = "€";
+        // Determina la divisa actual.
+        private void divisaSeleccionada(object sender, EventArgs e)
+        {
+            divisa = this.DivisaCaixa.SelectedItem.ToString();
+            this.CaixaEscriptura.Text = this.CaixaEscriptura.Text;
+        }
 
         // Calculs de conversió de divisa amb control d'errada.
         public void eurosAPesetes(Object sender, EventArgs e)
@@ -108,6 +116,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                 if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - 3), out double euros))
                 {
                     divisa = "€";
+                    this.DivisaCaixa.SelectedItem = divisa;
                     canviant_text = true;
                     canvi_manual = false;
                     this.CaixaEscriptura.Text = (euros * conversio).ToString("G"); // Compacta els nombres.
@@ -128,6 +137,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                 if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - 1), out double pesetas))
                 {
                     divisa = "Pts";
+                    this.DivisaCaixa.SelectedItem = divisa;
                     canviant_text = true;
                     canvi_manual = false;
                     this.CaixaEscriptura.Text = (pesetas / conversio).ToString("G"); // Compacta els nombres.
@@ -140,6 +150,12 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                     MessageBox.Show("Tan sols números.");
                 }
             }
+        }
+
+        // Buida la caixa.
+        private void buidarCaixa(object sender, EventArgs e)
+        {
+            this.CaixaEscriptura.Text = null;
         }
     }
 }

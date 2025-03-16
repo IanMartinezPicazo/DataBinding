@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             TaulaBotons = new TableLayoutPanel();
+            Buidar = new Button();
             PesetesAEuros = new Button();
             EurosAPesetes = new Button();
             CaixaEscriptura = new RichTextBox();
             TextTitol = new Label();
+            DivisaCaixa = new ComboBox();
             TaulaBotons.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,10 +45,12 @@
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaBotons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            TaulaBotons.Controls.Add(Buidar, 3, 5);
             TaulaBotons.Controls.Add(PesetesAEuros, 3, 4);
             TaulaBotons.Controls.Add(EurosAPesetes, 3, 3);
             TaulaBotons.Controls.Add(CaixaEscriptura, 0, 1);
             TaulaBotons.Controls.Add(TextTitol, 0, 0);
+            TaulaBotons.Controls.Add(DivisaCaixa, 3, 1);
             TaulaBotons.Dock = DockStyle.Fill;
             TaulaBotons.Location = new Point(0, 0);
             TaulaBotons.Name = "TaulaBotons";
@@ -59,6 +63,19 @@
             TaulaBotons.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6631947F));
             TaulaBotons.Size = new Size(800, 450);
             TaulaBotons.TabIndex = 0;
+            // 
+            // Buidar
+            // 
+            Buidar.BackColor = Color.Red;
+            Buidar.Dock = DockStyle.Fill;
+            Buidar.Location = new Point(603, 378);
+            Buidar.MinimumSize = new Size(40, 40);
+            Buidar.Name = "Buidar";
+            Buidar.Size = new Size(194, 69);
+            Buidar.TabIndex = 5;
+            Buidar.Text = "Buidar";
+            Buidar.UseVisualStyleBackColor = false;
+            Buidar.Click += buidarCaixa;
             // 
             // PesetesAEuros
             // 
@@ -110,6 +127,17 @@
             TextTitol.Text = "Conversor de divises";
             TextTitol.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // DivisaCaixa
+            // 
+            DivisaCaixa.Dock = DockStyle.Fill;
+            DivisaCaixa.FormattingEnabled = true;
+            DivisaCaixa.Items.AddRange(new object[] { "€", "Pts" });
+            DivisaCaixa.Location = new Point(603, 78);
+            DivisaCaixa.Name = "DivisaCaixa";
+            DivisaCaixa.Size = new Size(194, 28);
+            DivisaCaixa.TabIndex = 6;
+            DivisaCaixa.SelectedIndexChanged += divisaSeleccionada;
+            // 
             // Conversor
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -130,5 +158,7 @@
         private Button EurosAPesetes;
         private RichTextBox CaixaEscriptura;
         private Label TextTitol;
+        private Button Buidar;
+        private ComboBox DivisaCaixa;
     }
 }
