@@ -15,3 +15,20 @@ C:\Users\marti\Documents\Conversor de divises - Ian Martínez Picazo\obj\Debug\n
 C:\Users\marti\Documents\Conversor de divises - Ian Martínez Picazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.pdb
 C:\Users\marti\Documents\Conversor de divises - Ian Martínez Picazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.genruntimeconfig.cache
 C:\Users\marti\Documents\Conversor de divises - Ian Martínez Picazo\obj\Debug\net8.0-windows\ref\Conversor de divises - Ian Martínez Picazo.dll
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\bin\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.exe
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\bin\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.deps.json
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\bin\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.runtimeconfig.json
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\bin\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.dll
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\bin\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.pdb
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor_de_divises___Ian_Martínez_Picazo.Conversor.resources
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.csproj.GenerateResource.cache
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.AssemblyInfoInputs.cache
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.AssemblyInfo.cs
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.csproj.CoreCompileInputs.cache
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.sourcelink.json
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.dll
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\refint\Conversor de divises - Ian Martínez Picazo.dll
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.pdb
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\Conversor de divises - Ian Martínez Picazo.genruntimeconfig.cache
+C:\Users\marti\Documents\nf1-calculadora-IanMartinezPicazo\obj\Debug\net8.0-windows\ref\Conversor de divises - Ian Martínez Picazo.dll

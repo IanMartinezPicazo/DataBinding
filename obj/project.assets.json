@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\marti\\Documents\\Conversor de divises - Ian Martínez Picazo\\Conversor de divises - Ian Martínez Picazo.csproj",
+      "projectUniqueName": "C:\\Users\\marti\\Documents\\nf1-calculadora-IanMartinezPicazo\\Conversor de divises - Ian Martínez Picazo.csproj",
       "projectName": "Conversor de divises - Ian Martínez Picazo",
-      "projectPath": "C:\\Users\\marti\\Documents\\Conversor de divises - Ian Martínez Picazo\\Conversor de divises - Ian Martínez Picazo.csproj",
+      "projectPath": "C:\\Users\\marti\\Documents\\nf1-calculadora-IanMartinezPicazo\\Conversor de divises - Ian Martínez Picazo.csproj",
       "packagesPath": "C:\\Users\\marti\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\marti\\Documents\\Conversor de divises - Ian Martínez Picazo\\obj\\",
+      "outputPath": "C:\\Users\\marti\\Documents\\nf1-calculadora-IanMartinezPicazo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

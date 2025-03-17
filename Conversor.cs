@@ -1,5 +1,8 @@
 using System.Windows.Forms;
 
+// Permet fer que el dispisitiu de l'usuari pugui utilitzar qualsevol tipus de decimal.
+using System.Globalization;
+
 namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
     public partial class Conversor : Form
@@ -15,13 +18,14 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             {
                 CrearBotons("Num" + i, i.ToString(), (i - 1) % 3, (i - 1) / 3 + 2);
             }
-            CrearBotons("Num0", "0", 0, 5, true);
+            CrearBotons("Num0", "0", 0, 5, 2);
+            CrearBotons("Decimal", ".", 2, 5);
 
             this.DivisaCaixa.SelectedItem = divisa;
         }
 
         // Assigna els botons númerics per codi a la vista i també assigna un event compartit per a cadascú.
-        private void CrearBotons(string nom, string text, int columna, int fila, bool fusionarColumnes = false)
+        private void CrearBotons(string nom, string text, int columna, int fila, int fusionar_columnes = 1)
         {
             Button btn = new Button
             {
@@ -33,10 +37,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
 
             this.TaulaBotons.Controls.Add(btn, columna, fila);
 
-            if (fusionarColumnes)
-            {
-                this.TaulaBotons.SetColumnSpan(btn, 3);
-            }
+            this.TaulaBotons.SetColumnSpan(btn, fusionar_columnes);
 
             btn.Click += botoPremut;
         }
@@ -52,14 +53,16 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
 
 
         // Variable per evitar bucles.
-        private bool canviant_text = false, canvi_manual = true;
+        private bool canviant_text = false;
+
+        // Variable per diferenciar entre canvis a la caixa de text per codi i escrit manualment per l'usuari.
+        private bool canvi_manual = true;
 
         // Assegura que el contingut de la caixa de text sigui valid.
         public void validacioDeText(object sender, EventArgs e)
         {
             // Evita que l'esdeveniment s'activi mentre es modifica el text programàticament.
             if (canviant_text || !canvi_manual) return;
-
             // Desa la posició del cursor.
             int cursor = this.CaixaEscriptura.SelectionStart;
 
@@ -111,43 +114,41 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         // Calculs de conversió de divisa amb control d'errada.
         public void eurosAPesetes(Object sender, EventArgs e)
         {
-            if (!divisa.Equals("€") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
+            if (divisa.Equals("€") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
             {
-                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - 3), out double euros))
+                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - divisa.Length), NumberStyles.Float, CultureInfo.InvariantCulture, out double euros))
                 {
-                    divisa = "€";
-                    this.DivisaCaixa.SelectedItem = divisa;
+                    divisa = "Pts";
                     canviant_text = true;
                     canvi_manual = false;
-                    this.CaixaEscriptura.Text = (euros * conversio).ToString("G"); // Compacta els nombres.
-                    this.CaixaEscriptura.Text += divisa;
+                    this.CaixaEscriptura.Text = (euros * conversio).ToString("F2");
                     canviant_text = false;
                     canvi_manual = true;
+                    this.DivisaCaixa.SelectedItem = divisa;
                 }
                 else
                 {
-                    MessageBox.Show("Tan sols números.");
+                    MessageBox.Show("Error XD.");
                 }
             }
         }
         public void pesetesAEuros(Object sender, EventArgs e)
         {
-            if (!divisa.Equals("Pts") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
+            if (divisa.Equals("Pts") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
             {
-                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - 1), out double pesetas))
+                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - divisa.Length), NumberStyles.Float, CultureInfo.InvariantCulture, out double pesetas))
                 {
-                    divisa = "Pts";
-                    this.DivisaCaixa.SelectedItem = divisa;
+                    divisa = "€";
                     canviant_text = true;
                     canvi_manual = false;
-                    this.CaixaEscriptura.Text = (pesetas / conversio).ToString("G"); // Compacta els nombres.
-                    this.CaixaEscriptura.Text += divisa;
+                    this.CaixaEscriptura.Text = (pesetas / conversio).ToString("F2");
                     canviant_text = false;
                     canvi_manual = true;
+                    this.DivisaCaixa.SelectedItem = divisa;
                 }
                 else
                 {
-                    MessageBox.Show("Tan sols números.");
+                    MessageBox.Show("Error XD.");
                 }
             }
         }
