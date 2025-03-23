@@ -2,13 +2,56 @@ using System.Windows.Forms;
 
 // Permet fer que el dispisitiu de l'usuari pugui utilitzar qualsevol tipus de decimal.
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
     public partial class Conversor : Form
     {
-        // Determina la divisa actual. (Euro per defecte.)
-        private string divisa = "€";
+        // Divises seleccionables.
+        private static readonly string[] divises =
+        {
+            "Euro | €",
+            "Dòlar Estats Units | $",
+            "Lliura Esterlina | £",
+            "Ien Japonès | ¥",
+            "Franc Suís | CHF"
+        };
+
+        // Totes les conversions possibles.
+        private static readonly Dictionary<string, double> conversions = new Dictionary<string, double>
+        {
+            // Conversions d'Euro (€).
+            { "€_A_$", 1.10 },
+            { "€_A_£", 0.85 },
+            { "€_A_¥", 130.00 },
+            { "€_A_CHF", 1.05 },
+
+            // Conversions de Dòlar ($).
+            { "$_A_€", 1 / 1.10 },
+            { "$_A_£", 0.77 },
+            { "$_A_¥", 118.18 },
+            { "$_A_CHF", 0.95 },
+
+            // Conversions de Lliura Esterlina (£).
+            { "£_A_€", 1 / 0.85 },
+            { "£_A_$", 1.30 },
+            { "£_A_¥", 153.00 },
+            { "£_A_CHF", 1.36 },
+
+            // Conversions de Ien Japonès (¥).
+            { "¥_A_€", 1 / 130.00 },
+            { "¥_A_$", 1 / 118.18 },
+            { "¥_A_£", 1 / 153.00 },
+            { "¥_A_CHF", 0.0079 },
+
+            // Conversions de Franc Suís (CHF).
+            { "CHF_A_€", 1 / 1.05 },
+            { "CHF_A_$", 1 / 0.95 },
+            { "CHF_A_£", 1 / 1.36 },
+            { "CHF_A_¥", 1 / 0.0079 }
+        };
+
         public Conversor()
         {
             InitializeComponent();
@@ -21,7 +64,12 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             CrearBotons("Num0", "0", 0, 5, 2);
             CrearBotons("Decimal", ".", 2, 5);
 
-            this.DivisaCaixa.SelectedItem = divisa;
+            // Afegeix les divises als desplegables.
+            this.DivisaActualCaixa.Items.AddRange(divises);
+            this.DivisaConvertirCaixa.Items.AddRange(divises);
+
+            this.ContenidorDivisaActual.SplitterDistance = this.ContenidorDivisaActual.Width / 2;
+            this.ContenidorDivisaConvertir.SplitterDistance = this.ContenidorDivisaConvertir.Width / 2;
         }
 
         // Assigna els botons númerics per codi a la vista i també assigna un event compartit per a cadascú.
@@ -46,23 +94,20 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         public void botoPremut(Object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            string text = btn.Text;
 
-            this.CaixaEscriptura.Text += text;
+            this.CaixaEscriptura.Text += btn.Text;
         }
 
 
         // Variable per evitar bucles.
         private bool canviant_text = false;
 
-        // Variable per diferenciar entre canvis a la caixa de text per codi i escrit manualment per l'usuari.
-        private bool canvi_manual = true;
-
         // Assegura que el contingut de la caixa de text sigui valid.
         public void validacioDeText(object sender, EventArgs e)
         {
             // Evita que l'esdeveniment s'activi mentre es modifica el text programàticament.
-            if (canviant_text || !canvi_manual) return;
+            if (canviant_text) return;
+
             // Desa la posició del cursor.
             int cursor = this.CaixaEscriptura.SelectionStart;
 
@@ -91,7 +136,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             canviant_text = true;
 
             // Assigna el text validat de nou.
-            this.CaixaEscriptura.Text = text_valid + divisa;
+            this.CaixaEscriptura.Text = text_valid + aillarSimbolDivisa(this.DivisaActualCaixa.Text.Trim());
 
             // Restaura la posició del cursor després de la validació.
             this.CaixaEscriptura.SelectionStart = cursor;
@@ -100,57 +145,53 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             canviant_text = false;
         }
 
-
-        // Valor constant de conversió.
-        private const double conversio = 166.386;
-
         // Determina la divisa actual.
-        private void divisaSeleccionada(object sender, EventArgs e)
+        private void divisaActualSeleccionada(object sender, EventArgs e)
         {
-            divisa = this.DivisaCaixa.SelectedItem.ToString();
-            this.CaixaEscriptura.Text = this.CaixaEscriptura.Text;
+            this.CaixaEscriptura.Text = this.CaixaEscriptura.Text + " ";
         }
 
         // Calculs de conversió de divisa amb control d'errada.
-        public void eurosAPesetes(Object sender, EventArgs e)
+        private void convertirDivisa(object sender, EventArgs e)
         {
-            if (divisa.Equals("€") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
+            // Obté les divises seleccionades
+            String divisa_actual = aillarSimbolDivisa(this.DivisaActualCaixa.Text);
+            String divisa_convertir = aillarSimbolDivisa(this.DivisaConvertirCaixa.Text);
+
+            // Obté la part númmerica de la caixa de text
+            if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, CaixaEscriptura.Text.Length - divisa_actual.Length), NumberStyles.Any, CultureInfo.InvariantCulture, out double quantitat))
             {
-                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - divisa.Length), NumberStyles.Float, CultureInfo.InvariantCulture, out double euros))
+                // Consulta al dictionari per a fer el calcul de conversió.
+                string conversio = $"{divisa_actual}_A_{divisa_convertir}";
+                if (conversions.TryGetValue(conversio, out double taxa))
                 {
-                    divisa = "Pts";
-                    canviant_text = true;
-                    canvi_manual = false;
-                    this.CaixaEscriptura.Text = (euros * conversio).ToString("F2");
-                    canviant_text = false;
-                    canvi_manual = true;
-                    this.DivisaCaixa.SelectedItem = divisa;
+                    double resultat = quantitat * taxa;
+                    this.DivisaActualCaixa.SelectedItem = this.DivisaConvertirCaixa.SelectedItem;
+                    this.CaixaEscriptura.Text = resultat.ToString("F4");
                 }
                 else
                 {
-                    MessageBox.Show("Error XD.");
+                    MessageBox.Show("Skib");
                 }
+            }
+            else
+            {
+                MessageBox.Show("No m'agradan les lletres a l'hora de calcular.");
             }
         }
-        public void pesetesAEuros(Object sender, EventArgs e)
+
+        // Retorna el simbol de la divisa proporcionada. (Format: [Nom] | [Simbol)
+        public String aillarSimbolDivisa(String divisa_text)
         {
-            if (divisa.Equals("Pts") && !string.IsNullOrEmpty(this.CaixaEscriptura.Text.Trim()))
+            for (int i = 0;i < divisa_text.Length;i++)
             {
-                if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, this.CaixaEscriptura.Text.Length - divisa.Length), NumberStyles.Float, CultureInfo.InvariantCulture, out double pesetas))
+                char buscador = divisa_text[i];
+                if (buscador == '|')
                 {
-                    divisa = "€";
-                    canviant_text = true;
-                    canvi_manual = false;
-                    this.CaixaEscriptura.Text = (pesetas / conversio).ToString("F2");
-                    canviant_text = false;
-                    canvi_manual = true;
-                    this.DivisaCaixa.SelectedItem = divisa;
-                }
-                else
-                {
-                    MessageBox.Show("Error XD.");
+                    return divisa_text.Substring(i + 1).Trim();
                 }
             }
+            return "Skib";
         }
 
         // Buida la caixa.
