@@ -3,13 +3,33 @@ using System.Windows.Forms;
 // Permet fer que el dispisitiu de l'usuari pugui utilitzar qualsevol tipus de decimal.
 using System.Globalization;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
     public partial class Conversor : Form
     {
+        // Constructor per conversions.
+        public class Conversio
+        {
+            public string Client { get; set; }
+            public string Email { get; set; }
+            public DateTime DataTransaccio { get; set; }
+            public decimal Import1 { get; set; }
+            public string Divisa1 { get; set; }
+            public decimal Import2 { get; set; }
+            public string Divisa2 { get; set; }
+            public bool Compra { get; set; }
+            public bool Venda { get; set; }
+            public decimal Descompte1 { get; set; }
+            public decimal Descompte2 { get; set; }
+        }
+
+        // Emmagatzema conversions realitzades.
+        private static BindingList<Conversio> historial = new BindingList<Conversio>();
+
         // Divises seleccionables.
-        private static readonly string[] divises =
+        private static String[] divises =
         {
             "Euro | €",
             "Dòlar Estats Units | $",
@@ -19,7 +39,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         };
 
         // Totes les conversions possibles.
-        private static readonly Dictionary<string, double> conversions = new Dictionary<string, double>
+        private static Dictionary<string, double> conversions = new Dictionary<string, double>
         {
             // Conversions d'Euro (€).
             { "€_A_$", 1.10 },
@@ -56,8 +76,10 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         {
             InitializeComponent();
 
+            ContenidorDivisioVistes.SplitterDistance = ContenidorDivisioVistes.Width / 2;
+
             // Creació de botons númerics.
-            for (int i = 1; i <= 9; i++)
+            for (int i = 1;i <= 9;i++)
             {
                 CrearBotons("Num" + i, i.ToString(), (i - 1) % 3, (i - 1) / 3 + 2);
             }
@@ -65,11 +87,14 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             CrearBotons("Decimal", ".", 2, 5);
 
             // Afegeix les divises als desplegables.
-            this.DivisaActualCaixa.Items.AddRange(divises);
-            this.DivisaConvertirCaixa.Items.AddRange(divises);
+            DivisaActualCaixa.Items.AddRange(divises);
+            DivisaConvertirCaixa.Items.AddRange(divises);
 
-            this.ContenidorDivisaActual.SplitterDistance = this.ContenidorDivisaActual.Width / 2;
-            this.ContenidorDivisaConvertir.SplitterDistance = this.ContenidorDivisaConvertir.Width / 2;
+            ContenidorDivisaActual.SplitterDistance = ContenidorDivisaActual.Width / 2;
+            ContenidorDivisaConvertir.SplitterDistance = ContenidorDivisaConvertir.Width / 2;
+
+            // Vincula la taula d'historial de conversions amb una font d'informació.
+            TaulaDades.DataSource = historial;
         }
 
         // Assigna els botons númerics per codi a la vista i també assigna un event compartit per a cadascú.
@@ -83,9 +108,9 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                 Dock = DockStyle.Fill
             };
 
-            this.TaulaBotons.Controls.Add(btn, columna, fila);
+            TaulaConversor.Controls.Add(btn, columna, fila);
 
-            this.TaulaBotons.SetColumnSpan(btn, fusionar_columnes);
+            TaulaConversor.SetColumnSpan(btn, fusionar_columnes);
 
             btn.Click += botoPremut;
         }
@@ -95,7 +120,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         {
             Button btn = (Button)sender;
 
-            this.CaixaEscriptura.Text += btn.Text;
+            CaixaEscriptura.Text += btn.Text;
         }
 
 
@@ -109,10 +134,10 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             if (canviant_text) return;
 
             // Desa la posició del cursor.
-            int cursor = this.CaixaEscriptura.SelectionStart;
+            int cursor = CaixaEscriptura.SelectionStart;
 
             // Substitueix les comes per punts.
-            string text = this.CaixaEscriptura.Text.Replace(',', '.');
+            string text = CaixaEscriptura.Text.Replace(',', '.');
 
             // Preven l'entrada de caràcters no numèrics ni punts decimals excessius.
             string text_valid = string.Empty;
@@ -136,10 +161,10 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             canviant_text = true;
 
             // Assigna el text validat de nou.
-            this.CaixaEscriptura.Text = text_valid + aillarSimbolDivisa(this.DivisaActualCaixa.Text.Trim());
+            CaixaEscriptura.Text = text_valid + aillarSimbolDivisa(DivisaActualCaixa.Text.Trim());
 
             // Restaura la posició del cursor després de la validació.
-            this.CaixaEscriptura.SelectionStart = cursor;
+            CaixaEscriptura.SelectionStart = cursor;
 
             // Rehabilita l'esdeveniment de canvi de text després de la modificació.
             canviant_text = false;
@@ -148,26 +173,33 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         // Determina la divisa actual.
         private void divisaActualSeleccionada(object sender, EventArgs e)
         {
-            this.CaixaEscriptura.Text = this.CaixaEscriptura.Text + " ";
+            CaixaEscriptura.Text = CaixaEscriptura.Text + " ";
         }
 
         // Calculs de conversió de divisa amb control d'errada.
         private void convertirDivisa(object sender, EventArgs e)
         {
             // Obté les divises seleccionades
-            String divisa_actual = aillarSimbolDivisa(this.DivisaActualCaixa.Text);
-            String divisa_convertir = aillarSimbolDivisa(this.DivisaConvertirCaixa.Text);
+            String divisa_actual = aillarSimbolDivisa(DivisaActualCaixa.Text);
+            String divisa_convertir = aillarSimbolDivisa(DivisaConvertirCaixa.Text);
 
             // Obté la part númmerica de la caixa de text
-            if (double.TryParse(this.CaixaEscriptura.Text.Substring(0, CaixaEscriptura.Text.Length - divisa_actual.Length), NumberStyles.Any, CultureInfo.InvariantCulture, out double quantitat))
+            if (double.TryParse(CaixaEscriptura.Text.Substring(0, CaixaEscriptura.Text.Length - divisa_actual.Length), NumberStyles.Any, CultureInfo.InvariantCulture, out double quantitat))
             {
                 // Consulta al dictionari per a fer el calcul de conversió.
                 string conversio = $"{divisa_actual}_A_{divisa_convertir}";
                 if (conversions.TryGetValue(conversio, out double taxa))
                 {
                     double resultat = quantitat * taxa;
-                    this.DivisaActualCaixa.SelectedItem = this.DivisaConvertirCaixa.SelectedItem;
-                    this.CaixaEscriptura.Text = resultat.ToString("F4");
+                    DivisaActualCaixa.SelectedItem = DivisaConvertirCaixa.SelectedItem;
+                    CaixaEscriptura.Text = resultat.ToString("F4");
+                    historial.Add
+                    (
+                        new Conversio
+                        {
+                            
+                        }
+                    );
                 }
                 else
                 {
@@ -197,7 +229,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         // Buida la caixa.
         private void buidarCaixa(object sender, EventArgs e)
         {
-            this.CaixaEscriptura.Text = null;
+            CaixaEscriptura.Text = null;
         }
     }
 }
