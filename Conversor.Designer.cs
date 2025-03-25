@@ -34,15 +34,25 @@
             ContenidorDivisaConvertir = new SplitContainer();
             DivisaConvertirText = new Label();
             DivisaConvertirCaixa = new ComboBox();
-            Buidar = new Button();
+            BotoBuidar = new Button();
             CaixaEscriptura = new RichTextBox();
             ConversorTitol = new Label();
             ContenidorDivisaActual = new SplitContainer();
             DivisaActualText = new Label();
             DivisaActualCaixa = new ComboBox();
             TaulaHistorial = new TableLayoutPanel();
+            BotoEsborrar = new Button();
             HistorialTitol = new Label();
             TaulaDades = new DataGridView();
+            ContenidorTipusTransaccio = new Panel();
+            VendaTransaccio = new RadioButton();
+            CompraTransaccio = new RadioButton();
+            ContenidorClients = new SplitContainer();
+            ClientsText = new Label();
+            ClientsCaixa = new ComboBox();
+            DescomptesContenidor = new SplitContainer();
+            Descompte1CaixaMarca = new CheckBox();
+            Descompte2CaixaMarca = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)ContenidorDivisioVistes).BeginInit();
             ContenidorDivisioVistes.Panel1.SuspendLayout();
             ContenidorDivisioVistes.Panel2.SuspendLayout();
@@ -58,6 +68,15 @@
             ContenidorDivisaActual.SuspendLayout();
             TaulaHistorial.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TaulaDades).BeginInit();
+            ContenidorTipusTransaccio.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ContenidorClients).BeginInit();
+            ContenidorClients.Panel1.SuspendLayout();
+            ContenidorClients.Panel2.SuspendLayout();
+            ContenidorClients.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)DescomptesContenidor).BeginInit();
+            DescomptesContenidor.Panel1.SuspendLayout();
+            DescomptesContenidor.Panel2.SuspendLayout();
+            DescomptesContenidor.SuspendLayout();
             SuspendLayout();
             // 
             // ContenidorDivisioVistes
@@ -86,7 +105,7 @@
             TaulaConversor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaConversor.Controls.Add(ConvertirDivisaBoto, 3, 5);
             TaulaConversor.Controls.Add(ContenidorDivisaConvertir, 3, 4);
-            TaulaConversor.Controls.Add(Buidar, 3, 1);
+            TaulaConversor.Controls.Add(BotoBuidar, 3, 1);
             TaulaConversor.Controls.Add(CaixaEscriptura, 0, 1);
             TaulaConversor.Controls.Add(ConversorTitol, 0, 0);
             TaulaConversor.Controls.Add(ContenidorDivisaActual, 3, 3);
@@ -155,18 +174,18 @@
             DivisaConvertirCaixa.Size = new Size(43, 28);
             DivisaConvertirCaixa.TabIndex = 6;
             // 
-            // Buidar
+            // BotoBuidar
             // 
-            Buidar.BackColor = Color.Red;
-            Buidar.Dock = DockStyle.Fill;
-            Buidar.Location = new Point(303, 78);
-            Buidar.MinimumSize = new Size(40, 40);
-            Buidar.Name = "Buidar";
-            Buidar.Size = new Size(94, 69);
-            Buidar.TabIndex = 5;
-            Buidar.Text = "Buidar";
-            Buidar.UseVisualStyleBackColor = false;
-            Buidar.Click += buidarCaixa;
+            BotoBuidar.BackColor = Color.Red;
+            BotoBuidar.Dock = DockStyle.Fill;
+            BotoBuidar.Location = new Point(303, 78);
+            BotoBuidar.MinimumSize = new Size(40, 40);
+            BotoBuidar.Name = "BotoBuidar";
+            BotoBuidar.Size = new Size(94, 69);
+            BotoBuidar.TabIndex = 5;
+            BotoBuidar.Text = "Buidar";
+            BotoBuidar.UseVisualStyleBackColor = false;
+            BotoBuidar.Click += buidarCaixa;
             // 
             // CaixaEscriptura
             // 
@@ -180,7 +199,7 @@
             CaixaEscriptura.Size = new Size(294, 69);
             CaixaEscriptura.TabIndex = 3;
             CaixaEscriptura.Text = "";
-            CaixaEscriptura.TextChanged += validacioDeText;
+            CaixaEscriptura.TextChanged += validacioQuantitat;
             // 
             // ConversorTitol
             // 
@@ -242,8 +261,12 @@
             TaulaHistorial.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaHistorial.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             TaulaHistorial.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            TaulaHistorial.Controls.Add(BotoEsborrar, 0, 3);
             TaulaHistorial.Controls.Add(HistorialTitol, 0, 0);
             TaulaHistorial.Controls.Add(TaulaDades, 0, 1);
+            TaulaHistorial.Controls.Add(ContenidorTipusTransaccio, 3, 5);
+            TaulaHistorial.Controls.Add(ContenidorClients, 0, 4);
+            TaulaHistorial.Controls.Add(DescomptesContenidor, 0, 5);
             TaulaHistorial.Dock = DockStyle.Fill;
             TaulaHistorial.Location = new Point(0, 0);
             TaulaHistorial.Name = "TaulaHistorial";
@@ -254,8 +277,23 @@
             TaulaHistorial.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
             TaulaHistorial.RowStyles.Add(new RowStyle(SizeType.Percent, 16.66736F));
             TaulaHistorial.RowStyles.Add(new RowStyle(SizeType.Percent, 16.6631947F));
+            TaulaHistorial.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             TaulaHistorial.Size = new Size(396, 450);
             TaulaHistorial.TabIndex = 2;
+            // 
+            // BotoEsborrar
+            // 
+            BotoEsborrar.BackColor = Color.Red;
+            TaulaHistorial.SetColumnSpan(BotoEsborrar, 4);
+            BotoEsborrar.Dock = DockStyle.Fill;
+            BotoEsborrar.Location = new Point(3, 228);
+            BotoEsborrar.MinimumSize = new Size(40, 40);
+            BotoEsborrar.Name = "BotoEsborrar";
+            BotoEsborrar.Size = new Size(390, 69);
+            BotoEsborrar.TabIndex = 14;
+            BotoEsborrar.Text = "Esborrar registre";
+            BotoEsborrar.UseVisualStyleBackColor = false;
+            BotoEsborrar.Click += esborrarRegistre;
             // 
             // HistorialTitol
             // 
@@ -272,17 +310,137 @@
             // 
             // TaulaDades
             // 
+            TaulaDades.AllowUserToAddRows = false;
+            TaulaDades.AllowUserToDeleteRows = false;
             TaulaDades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             TaulaDades.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TaulaHistorial.SetColumnSpan(TaulaDades, 4);
             TaulaDades.Dock = DockStyle.Fill;
             TaulaDades.Location = new Point(3, 78);
             TaulaDades.Name = "TaulaDades";
-            TaulaDades.ReadOnly = true;
             TaulaDades.RowHeadersWidth = 51;
             TaulaHistorial.SetRowSpan(TaulaDades, 2);
             TaulaDades.Size = new Size(390, 144);
             TaulaDades.TabIndex = 5;
+            // 
+            // ContenidorTipusTransaccio
+            // 
+            ContenidorTipusTransaccio.Controls.Add(VendaTransaccio);
+            ContenidorTipusTransaccio.Controls.Add(CompraTransaccio);
+            ContenidorTipusTransaccio.Dock = DockStyle.Fill;
+            ContenidorTipusTransaccio.Location = new Point(300, 378);
+            ContenidorTipusTransaccio.Name = "ContenidorTipusTransaccio";
+            ContenidorTipusTransaccio.Size = new Size(93, 69);
+            ContenidorTipusTransaccio.TabIndex = 12;
+            // 
+            // VendaTransaccio
+            // 
+            VendaTransaccio.AutoSize = true;
+            VendaTransaccio.Dock = DockStyle.Bottom;
+            VendaTransaccio.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            VendaTransaccio.Location = new Point(0, 45);
+            VendaTransaccio.Name = "VendaTransaccio";
+            VendaTransaccio.Size = new Size(93, 24);
+            VendaTransaccio.TabIndex = 3;
+            VendaTransaccio.Text = "Venda";
+            VendaTransaccio.UseVisualStyleBackColor = true;
+            // 
+            // CompraTransaccio
+            // 
+            CompraTransaccio.AutoSize = true;
+            CompraTransaccio.Checked = true;
+            CompraTransaccio.Dock = DockStyle.Top;
+            CompraTransaccio.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            CompraTransaccio.Location = new Point(0, 0);
+            CompraTransaccio.Name = "CompraTransaccio";
+            CompraTransaccio.Size = new Size(93, 24);
+            CompraTransaccio.TabIndex = 2;
+            CompraTransaccio.TabStop = true;
+            CompraTransaccio.Text = "Compra";
+            CompraTransaccio.UseVisualStyleBackColor = true;
+            // 
+            // ContenidorClients
+            // 
+            TaulaHistorial.SetColumnSpan(ContenidorClients, 4);
+            ContenidorClients.Dock = DockStyle.Fill;
+            ContenidorClients.Location = new Point(3, 303);
+            ContenidorClients.Name = "ContenidorClients";
+            // 
+            // ContenidorClients.Panel1
+            // 
+            ContenidorClients.Panel1.Controls.Add(ClientsText);
+            // 
+            // ContenidorClients.Panel2
+            // 
+            ContenidorClients.Panel2.Controls.Add(ClientsCaixa);
+            ContenidorClients.Size = new Size(390, 69);
+            ContenidorClients.SplitterDistance = 195;
+            ContenidorClients.TabIndex = 13;
+            // 
+            // ClientsText
+            // 
+            ClientsText.Dock = DockStyle.Top;
+            ClientsText.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ClientsText.Location = new Point(0, 0);
+            ClientsText.Name = "ClientsText";
+            ClientsText.Size = new Size(195, 20);
+            ClientsText.TabIndex = 7;
+            ClientsText.Text = "Client";
+            ClientsText.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // ClientsCaixa
+            // 
+            ClientsCaixa.Dock = DockStyle.Fill;
+            ClientsCaixa.DropDownStyle = ComboBoxStyle.DropDownList;
+            ClientsCaixa.FormattingEnabled = true;
+            ClientsCaixa.Location = new Point(0, 0);
+            ClientsCaixa.Name = "ClientsCaixa";
+            ClientsCaixa.Size = new Size(191, 28);
+            ClientsCaixa.TabIndex = 6;
+            // 
+            // DescomptesContenidor
+            // 
+            TaulaHistorial.SetColumnSpan(DescomptesContenidor, 3);
+            DescomptesContenidor.Dock = DockStyle.Fill;
+            DescomptesContenidor.Location = new Point(3, 378);
+            DescomptesContenidor.Name = "DescomptesContenidor";
+            // 
+            // DescomptesContenidor.Panel1
+            // 
+            DescomptesContenidor.Panel1.Controls.Add(Descompte1CaixaMarca);
+            // 
+            // DescomptesContenidor.Panel2
+            // 
+            DescomptesContenidor.Panel2.Controls.Add(Descompte2CaixaMarca);
+            DescomptesContenidor.Size = new Size(291, 69);
+            DescomptesContenidor.SplitterDistance = 146;
+            DescomptesContenidor.TabIndex = 15;
+            // 
+            // Descompte1CaixaMarca
+            // 
+            Descompte1CaixaMarca.AutoSize = true;
+            Descompte1CaixaMarca.CausesValidation = false;
+            Descompte1CaixaMarca.Dock = DockStyle.Fill;
+            Descompte1CaixaMarca.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Descompte1CaixaMarca.Location = new Point(0, 0);
+            Descompte1CaixaMarca.Name = "Descompte1CaixaMarca";
+            Descompte1CaixaMarca.Size = new Size(146, 69);
+            Descompte1CaixaMarca.TabIndex = 10;
+            Descompte1CaixaMarca.Text = "Descompte 1";
+            Descompte1CaixaMarca.UseVisualStyleBackColor = true;
+            // 
+            // Descompte2CaixaMarca
+            // 
+            Descompte2CaixaMarca.AutoSize = true;
+            Descompte2CaixaMarca.CausesValidation = false;
+            Descompte2CaixaMarca.Dock = DockStyle.Fill;
+            Descompte2CaixaMarca.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Descompte2CaixaMarca.Location = new Point(0, 0);
+            Descompte2CaixaMarca.Name = "Descompte2CaixaMarca";
+            Descompte2CaixaMarca.Size = new Size(141, 69);
+            Descompte2CaixaMarca.TabIndex = 11;
+            Descompte2CaixaMarca.Text = "Descompte 2";
+            Descompte2CaixaMarca.UseVisualStyleBackColor = true;
             // 
             // Conversor
             // 
@@ -309,6 +467,18 @@
             TaulaHistorial.ResumeLayout(false);
             TaulaHistorial.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TaulaDades).EndInit();
+            ContenidorTipusTransaccio.ResumeLayout(false);
+            ContenidorTipusTransaccio.PerformLayout();
+            ContenidorClients.Panel1.ResumeLayout(false);
+            ContenidorClients.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)ContenidorClients).EndInit();
+            ContenidorClients.ResumeLayout(false);
+            DescomptesContenidor.Panel1.ResumeLayout(false);
+            DescomptesContenidor.Panel1.PerformLayout();
+            DescomptesContenidor.Panel2.ResumeLayout(false);
+            DescomptesContenidor.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)DescomptesContenidor).EndInit();
+            DescomptesContenidor.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -320,7 +490,7 @@
         private SplitContainer ContenidorDivisaConvertir;
         private Label DivisaConvertirText;
         private ComboBox DivisaConvertirCaixa;
-        private Button Buidar;
+        private Button BotoBuidar;
         private RichTextBox CaixaEscriptura;
         private Label ConversorTitol;
         private SplitContainer ContenidorDivisaActual;
@@ -329,5 +499,15 @@
         private TableLayoutPanel TaulaHistorial;
         private Label HistorialTitol;
         private DataGridView TaulaDades;
+        private ComboBox ClientsCaixa;
+        private Label ClientsText;
+        private CheckBox Descompte2CaixaMarca;
+        private CheckBox Descompte1CaixaMarca;
+        private Panel ContenidorTipusTransaccio;
+        private RadioButton VendaTransaccio;
+        private RadioButton CompraTransaccio;
+        private SplitContainer ContenidorClients;
+        private Button BotoEsborrar;
+        private SplitContainer DescomptesContenidor;
     }
 }

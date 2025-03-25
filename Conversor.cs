@@ -4,32 +4,66 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Diagnostics;
 using System.ComponentModel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using System.Security.Policy;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
     public partial class Conversor : Form
     {
         // Constructor per conversions.
-        public class Conversio
+        public class Transaccio
         {
             public string Client { get; set; }
             public string Email { get; set; }
             public DateTime DataTransaccio { get; set; }
-            public decimal Import1 { get; set; }
+            public double Import1 { get; set; }
             public string Divisa1 { get; set; }
-            public decimal Import2 { get; set; }
+            public double Import2 { get; set; }
             public string Divisa2 { get; set; }
             public bool Compra { get; set; }
             public bool Venda { get; set; }
-            public decimal Descompte1 { get; set; }
-            public decimal Descompte2 { get; set; }
+            public bool Descompte1 { get; set; }
+            public bool Descompte2 { get; set; }
+
+            public Transaccio
+            (
+                string client,
+                string email,
+                DateTime dataTransaccio,
+                double import1,
+                string divisa1,
+                double import2,
+                string divisa2,
+                bool compra,
+                bool venda,
+                bool descompte1,
+                bool descompte2
+            )
+            {
+                Client = client;
+                Email = email;
+                DataTransaccio = dataTransaccio;
+                Import1 = import1;
+                Divisa1 = divisa1;
+                Import2 = import2;
+                Divisa2 = divisa2;
+                Compra = compra;
+                Venda = venda;
+                Descompte1 = descompte1;
+                Descompte2 = descompte2;
+            }
         }
 
         // Emmagatzema conversions realitzades.
-        private static BindingList<Conversio> historial = new BindingList<Conversio>();
+        private static BindingList<Transaccio> historial = new BindingList<Transaccio>();
+
+        // Emmagatzema clients.
+        private static BindingList<string> clients = new BindingList<string>();
 
         // Divises seleccionables.
-        private static String[] divises =
+        private static string[] divises =
         {
             "Euro | €",
             "Dòlar Estats Units | $",
@@ -76,10 +110,10 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         {
             InitializeComponent();
 
-            ContenidorDivisioVistes.SplitterDistance = ContenidorDivisioVistes.Width / 2;
+            ContenidorDivisioVistes.SplitterDistance = ContenidorDivisioVistes.Width / 3;
 
             // Creació de botons númerics.
-            for (int i = 1;i <= 9;i++)
+            for (int i = 1; i <= 9; i++)
             {
                 CrearBotons("Num" + i, i.ToString(), (i - 1) % 3, (i - 1) / 3 + 2);
             }
@@ -92,9 +126,33 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
 
             ContenidorDivisaActual.SplitterDistance = ContenidorDivisaActual.Width / 2;
             ContenidorDivisaConvertir.SplitterDistance = ContenidorDivisaConvertir.Width / 2;
+            DescomptesContenidor.SplitterDistance = DescomptesContenidor.Width / 2;
+            ContenidorClients.SplitterDistance = ContenidorClients.Width / 4;
 
             // Vincula la taula d'historial de conversions amb una font d'informació.
             TaulaDades.DataSource = historial;
+
+            // Vincula el desplegable de clients amb una font d'informació.
+            ClientsCaixa.DataSource = clients;
+
+            // Clients per demostrar.
+            List<string> clients_demostratius = new List<string>
+            {
+                "John Smith | john.smith@email.com",
+                "Jane Doe | jane.doe@email.com",
+                "Michael Johnson | michael.j@email.com",
+                "Emily Davis | emily.d@email.com",
+                "David Wilson | david.w@email.com",
+                "Sarah Brown | sarah.b@email.com",
+                "Chris Martinez | chris.m@email.com",
+                "Jessica Taylor | jessica.t@email.com",
+                "Daniel Anderson | daniel.a@email.com",
+                "Laura White | laura.w@email.com"
+            };
+            foreach (var client in clients_demostratius)
+            {
+                clients.Add(client);
+            }
         }
 
         // Assigna els botons númerics per codi a la vista i també assigna un event compartit per a cadascú.
@@ -128,7 +186,7 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         private bool canviant_text = false;
 
         // Assegura que el contingut de la caixa de text sigui valid.
-        public void validacioDeText(object sender, EventArgs e)
+        public void validacioQuantitat(object sender, EventArgs e)
         {
             // Evita que l'esdeveniment s'activi mentre es modifica el text programàticament.
             if (canviant_text) return;
@@ -179,43 +237,77 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         // Calculs de conversió de divisa amb control d'errada.
         private void convertirDivisa(object sender, EventArgs e)
         {
-            // Obté les divises seleccionades
-            String divisa_actual = aillarSimbolDivisa(DivisaActualCaixa.Text);
-            String divisa_convertir = aillarSimbolDivisa(DivisaConvertirCaixa.Text);
-
-            // Obté la part númmerica de la caixa de text
-            if (double.TryParse(CaixaEscriptura.Text.Substring(0, CaixaEscriptura.Text.Length - divisa_actual.Length), NumberStyles.Any, CultureInfo.InvariantCulture, out double quantitat))
+            if (!string.IsNullOrEmpty(CaixaEscriptura.Text))
             {
-                // Consulta al dictionari per a fer el calcul de conversió.
-                string conversio = $"{divisa_actual}_A_{divisa_convertir}";
-                if (conversions.TryGetValue(conversio, out double taxa))
+                // Obté les divises seleccionades
+                string divisa_actual = aillarSimbolDivisa(DivisaActualCaixa.Text);
+                string divisa_convertir = aillarSimbolDivisa(DivisaConvertirCaixa.Text);
+
+                // Obté la part númmerica de la caixa de text
+                if (double.TryParse(CaixaEscriptura.Text.Substring(0, CaixaEscriptura.Text.Length - divisa_actual.Length), NumberStyles.Any, CultureInfo.InvariantCulture, out double quantitat))
                 {
-                    double resultat = quantitat * taxa;
-                    DivisaActualCaixa.SelectedItem = DivisaConvertirCaixa.SelectedItem;
-                    CaixaEscriptura.Text = resultat.ToString("F4");
-                    historial.Add
-                    (
-                        new Conversio
+                    // Consulta al dictionari per a fer el calcul de conversió.
+                    string conversio = $"{divisa_actual}_A_{divisa_convertir}";
+                    if (conversions.TryGetValue(conversio, out double taxa))
+                    {
+                        // Obté el nom i el e-mail del client.
+                        string[] client = ClientsCaixa.Text.Split("|");
+
+                        // Comprova que cap valor es buit.
+                        if
+                        (
+                            client != null &&
+                            client[0] != null &&
+                            client[1] != null &&
+                            divisa_actual != null &&
+                            divisa_convertir != null
+                        )
                         {
-                            
+                            // Calcula la conversió.
+                            double resultat = quantitat * taxa;
+                            DivisaActualCaixa.SelectedItem = DivisaConvertirCaixa.SelectedItem;
+                            CaixaEscriptura.Text = resultat.ToString("F4");
+
+                            // Afegeix la conversió a l'historial.
+                            historial.Add
+                            (
+                                new Transaccio
+                                (
+                                    client[0],
+                                    client[1],
+                                    DateTime.Now,
+                                    quantitat,
+                                    divisa_actual,
+                                    resultat,
+                                    divisa_convertir,
+                                    CompraTransaccio.Checked,
+                                    VendaTransaccio.Checked,
+                                    Descompte1CaixaMarca.Checked,
+                                    Descompte2CaixaMarca.Checked
+                                )
+                            );
                         }
-                    );
+                        else
+                        {
+                            MessageBox.Show("Omple tots els camps");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Skib");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Skib");
+                    MessageBox.Show("No m'agradan les lletres a l'hora de calcular.");
                 }
-            }
-            else
-            {
-                MessageBox.Show("No m'agradan les lletres a l'hora de calcular.");
             }
         }
 
         // Retorna el simbol de la divisa proporcionada. (Format: [Nom] | [Simbol)
-        public String aillarSimbolDivisa(String divisa_text)
+        public string aillarSimbolDivisa(string divisa_text)
         {
-            for (int i = 0;i < divisa_text.Length;i++)
+            for (int i = 0; i < divisa_text.Length; i++)
             {
                 char buscador = divisa_text[i];
                 if (buscador == '|')
@@ -230,6 +322,28 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
         private void buidarCaixa(object sender, EventArgs e)
         {
             CaixaEscriptura.Text = null;
+        }
+
+        // S'executa quan l'usuari tracta d'esborrar un registre.
+        private void esborrarRegistre(object sender, EventArgs e)
+        {
+            if (TaulaDades.SelectedRows.Count > 0)
+            {
+                DialogResult resultat = MessageBox.Show
+                (
+                    "Vols esborrar el registre?",
+                    "Confirmació",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (resultat == DialogResult.Yes)
+                {
+                    int id_registre = TaulaDades.SelectedRows[0].Index;
+
+                    historial.RemoveAt(id_registre);
+                }
+            }
         }
     }
 }
