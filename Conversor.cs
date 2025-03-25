@@ -345,5 +345,45 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                 }
             }
         }
+
+        // Variable per evitar bucles.
+        bool canviant_valors = false;
+
+        // S'executa en actualitzar dades.
+        private void comprovarCompraVendaCoherent(object sender, DataGridViewCellEventArgs e)
+        {
+            if (canviant_valors) return;
+            canviant_valors = true;
+
+            // Troba la fila i columna modificada.
+            var columna = TaulaDades.Columns[e.ColumnIndex];
+            var fila = TaulaDades.Rows[e.RowIndex];
+            bool vendaSeleccionat = Convert.ToBoolean(fila.Cells["Venda"].Value);
+
+            // Aplica la lògica de que compra i venda no poden ser seleccionats a la vegada, i que sempre hi ha d'haver-hi un seleccionat.
+            if (columna.Name.Equals("Compra"))
+            {
+                if (Convert.ToBoolean(fila.Cells["Compra"].Value))
+                {
+                    fila.Cells["Venda"].Value = false;
+                }
+                else
+                {
+                    fila.Cells["Venda"].Value = true;
+                }
+            }
+            else if (columna.Name.Equals("Venda"))
+            {
+                if (Convert.ToBoolean(fila.Cells["Venda"].Value))
+                {
+                    fila.Cells["Compra"].Value = false;
+                }
+                else
+                {
+                    fila.Cells["Compra"].Value = true;
+                }
+            }
+            canviant_valors = false;
+        }
     }
 }

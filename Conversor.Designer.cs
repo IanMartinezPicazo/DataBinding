@@ -322,6 +322,7 @@
             TaulaHistorial.SetRowSpan(TaulaDades, 2);
             TaulaDades.Size = new Size(390, 144);
             TaulaDades.TabIndex = 5;
+            TaulaDades.CellValueChanged += comprovarCompraVendaCoherent;
             // 
             // ContenidorTipusTransaccio
             // 
