@@ -7,6 +7,7 @@ using System.ComponentModel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using System.Security.Policy;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using Microsoft.VisualBasic;
 
 namespace Conversor_de_divises___Ian_Martínez_Picazo
 {
@@ -346,11 +347,32 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             }
         }
 
+        // Comprova que els imports en els registres siguin numericament valids.
+        private void TaulaDades_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            string nom_columna = TaulaDades.Columns[e.ColumnIndex].Name;
+            string valor_celda = Convert.ToString(e.FormattedValue) ?? "";
+
+            if (nom_columna == "Import1" || nom_columna == "Import2")
+            {
+                if (!double.TryParse(valor_celda, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double valor))
+                {
+                    MessageBox.Show("No és un nombre.");
+                    e.Cancel = true; // No permet fer clic a cap altre objecte.
+                }
+                else
+                {
+                    TaulaDades.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = valor;
+                }
+            }
+        }
+
+
         // Variable per evitar bucles.
         bool canviant_valors = false;
 
-        // S'executa en actualitzar dades.
-        private void comprovarCompraVendaCoherent(object sender, DataGridViewCellEventArgs e)
+        // S'executa en actualitzar dades. (Tan sols s'executa si els import son numericament valids.)
+        private void comprovarDadesCoherents(object sender, DataGridViewCellEventArgs e)
         {
             if (canviant_valors) return;
             canviant_valors = true;
@@ -358,7 +380,6 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
             // Troba la fila i columna modificada.
             var columna = TaulaDades.Columns[e.ColumnIndex];
             var fila = TaulaDades.Rows[e.RowIndex];
-            bool vendaSeleccionat = Convert.ToBoolean(fila.Cells["Venda"].Value);
 
             // Aplica la lògica de que compra i venda no poden ser seleccionats a la vegada, i que sempre hi ha d'haver-hi un seleccionat.
             if (columna.Name.Equals("Compra"))
@@ -383,7 +404,80 @@ namespace Conversor_de_divises___Ian_Martínez_Picazo
                     fila.Cells["Compra"].Value = true;
                 }
             }
+
+            // Aplica la lògica de canvi de divises i imports en temps real.
+            if (columna.Name.Equals("Divisa1") || columna.Name.Equals("Divisa2"))
+            {
+                // Control d'errada.
+                bool divisa1_valida = false, divisa2_valida = false;
+                foreach (String divisa in divises)
+                {
+                    if (fila.Cells["Divisa1"].Value.Equals(aillarSimbolDivisa(divisa)))
+                    {
+                        divisa1_valida = true;
+                    }
+                    if (fila.Cells["Divisa2"].Value.Equals(aillarSimbolDivisa(divisa)))
+                    {
+                        divisa2_valida = true;
+                    }
+                }
+                if (!divisa1_valida || !divisa2_valida || fila.Cells["Divisa1"].Value.Equals(fila.Cells["Divisa2"].Value))
+                {
+                    MessageBox.Show("Divises no valida.");
+                    fila.Cells["Divisa1"].Value = divises[0].Substring(divises[0].Length - 1);
+                    fila.Cells["Divisa2"].Value = divises[1].Substring(divises[1].Length - 1);
+                }
+
+                // Executa la conversió
+                String conversio = $"{fila.Cells["Divisa1"].Value}_A_{fila.Cells["Divisa2"].Value}";
+                if (conversions.TryGetValue(conversio, out double taxa))
+                {
+                    double resultat = (double)fila.Cells["Import1"].Value * taxa;
+                    fila.Cells["Import2"].Value = resultat;
+                }
+            }
+            if (columna.Name.Equals("Import1"))
+            {
+                // Executa la conversió
+                String conversio = $"{fila.Cells["Divisa1"].Value}_A_{fila.Cells["Divisa2"].Value}";
+                if (conversions.TryGetValue(conversio, out double taxa))
+                {
+                    double resultat = (double)fila.Cells["Import1"].Value * taxa;
+                    fila.Cells["Import2"].Value = resultat;
+                }
+            }
+            if (columna.Name.Equals("Import2"))
+            {
+                String conversio = $"{fila.Cells["Divisa2"].Value}_A_{fila.Cells["Divisa1"].Value}";
+                if (conversions.TryGetValue(conversio, out double taxa))
+                {
+                    double resultat = (double)fila.Cells["Import2"].Value * taxa;
+                    fila.Cells["Import1"].Value = resultat;
+                }
+            }
             canviant_valors = false;
+        }
+
+        // Executat en premer qualsevol tecla.
+        private void keyShortcuts(object sender, KeyEventArgs e)
+        {
+            // Conversió de divisa.
+            if (e.Control && e.KeyCode == Keys.N)
+            {
+                convertirDivisa(sender, e);
+            }
+
+            // Buidar caixa.
+            if (e.Control && e.KeyCode == Keys.Q)
+            {
+                buidarCaixa(sender, e);
+            }
+
+            // Esborrar registre.
+            if (e.Control && e.KeyCode == Keys.D)
+            {
+                esborrarRegistre(sender, e);
+            }
         }
     }
 }

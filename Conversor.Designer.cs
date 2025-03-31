@@ -131,7 +131,7 @@
             ConvertirDivisaBoto.Name = "ConvertirDivisaBoto";
             ConvertirDivisaBoto.Size = new Size(94, 69);
             ConvertirDivisaBoto.TabIndex = 10;
-            ConvertirDivisaBoto.Text = "Convertir";
+            ConvertirDivisaBoto.Text = "Convertir\r\n(Ctrl+N)";
             ConvertirDivisaBoto.UseVisualStyleBackColor = false;
             ConvertirDivisaBoto.Click += convertirDivisa;
             // 
@@ -183,7 +183,7 @@
             BotoBuidar.Name = "BotoBuidar";
             BotoBuidar.Size = new Size(94, 69);
             BotoBuidar.TabIndex = 5;
-            BotoBuidar.Text = "Buidar";
+            BotoBuidar.Text = "Buidar\r\n(Ctrl+Q)";
             BotoBuidar.UseVisualStyleBackColor = false;
             BotoBuidar.Click += buidarCaixa;
             // 
@@ -291,7 +291,7 @@
             BotoEsborrar.Name = "BotoEsborrar";
             BotoEsborrar.Size = new Size(390, 69);
             BotoEsborrar.TabIndex = 14;
-            BotoEsborrar.Text = "Esborrar registre";
+            BotoEsborrar.Text = "Esborrar registre\r\n(Ctrl+D)\r\n";
             BotoEsborrar.UseVisualStyleBackColor = false;
             BotoEsborrar.Click += esborrarRegistre;
             // 
@@ -322,7 +322,7 @@
             TaulaHistorial.SetRowSpan(TaulaDades, 2);
             TaulaDades.Size = new Size(390, 144);
             TaulaDades.TabIndex = 5;
-            TaulaDades.CellValueChanged += comprovarCompraVendaCoherent;
+            TaulaDades.CellValueChanged += comprovarDadesCoherents;
             // 
             // ContenidorTipusTransaccio
             // 
@@ -345,6 +345,7 @@
             VendaTransaccio.TabIndex = 3;
             VendaTransaccio.Text = "Venda";
             VendaTransaccio.UseVisualStyleBackColor = true;
+            VendaTransaccio.KeyDown += keyShortcuts;
             // 
             // CompraTransaccio
             // 
@@ -449,8 +450,10 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(ContenidorDivisioVistes);
+            KeyPreview = true;
             Name = "Conversor";
             Text = "Conversor de divises";
+            KeyDown += keyShortcuts;
             ContenidorDivisioVistes.Panel1.ResumeLayout(false);
             ContenidorDivisioVistes.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)ContenidorDivisioVistes).EndInit();
